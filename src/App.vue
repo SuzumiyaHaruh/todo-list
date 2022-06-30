@@ -4,7 +4,7 @@
       <h1>欢迎使用 Todo 待办事项！</h1>
       <todo-add :addTodo="addTodo"></todo-add>
       <todo-footer :todos="todos" :checkAllTodos="checkAllTodos" :deleteAllTodo="deleteAllTodo"></todo-footer>
-      <todo-list :todos="todos" :checkTodo="checkTodo" :deleteTodo="deleteTodo"></todo-list>
+      <todo-list :todos="todos"></todo-list>
     </div>
   </main>
 </template>
@@ -13,6 +13,7 @@
 import TodoAdd from "@/components/TodoAdd";
 import TodoFooter from "@/components/TodoFooter";
 import TodoList from "@/components/TodoList";
+import pubsub from "pubsub-js";
 
 export default {
   name: 'App',
@@ -33,13 +34,13 @@ export default {
       this.todos.unshift(todo)
     },
     //勾选or取消勾选一个todo
-    checkTodo(id) {
+    checkTodo(_,id) {
       this.todos.forEach((todo) => {
         if (todo.id === id) todo.mode = !todo.mode
       })
     },
     //删除一个todo
-    deleteTodo(id) {
+    deleteTodo(_, id) {
       this.todos = this.todos.filter(todo => todo.id !== id)
     },
     //全选or取消全选
@@ -54,6 +55,15 @@ export default {
         return !todo.mode
       })
     }
+  },
+  mounted() {
+    // this.$bus.$on('checkTodo',this.checkTodo)
+    this.pubId1 = pubsub.subscribe('deleteTodo', this.deleteTodo)
+    this.pubId2 = pubsub.subscribe('checkTodo', this.checkTodo)
+  },
+  beforeUnmount() {
+    // this.$bus.$off('checkTodo')
+    pubsub.unsubscribe(this.pubId1)
   },
   watch: {
     todos: {
