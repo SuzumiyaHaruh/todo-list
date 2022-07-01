@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="container">
-      <h1>欢迎使用 Todo 待办事项！</h1>
+      <h1> Todo 待办事项！</h1>
       <todo-add :addTodo="addTodo"></todo-add>
       <todo-footer :todos="todos" :checkAllTodos="checkAllTodos" :deleteAllTodo="deleteAllTodo"></todo-footer>
       <todo-list :todos="todos"></todo-list>
